@@ -1,58 +1,71 @@
 import java.util.ArrayList;
 import java.util.List;
 
+// p = player
+// c = computer
+// e = empty
 @SuppressWarnings("SpellCheckingInspection")
 public class Board {
 
-    private List<Coords> grid = new ArrayList<>();
+    private String[][] grid = new String[3][3];
+    private List<Coords> moves = new ArrayList<>();
 
-    public Board(){
+    public Board() {
         //Invalid coordinate in order to allow list to be rendered
         //Should look up why this happens
-        grid.add(new Coords(-1,-1,"e"));
     }
 
-    public void addCoords(int x, int y, String owner){
-        grid.add(new Coords(x, y, owner));
-    }
-
-    public void getCoords(){
-        for (Coords c : this.grid){
-            System.out.println(c);
+    public boolean addCoords(Coords c) {
+        for (Coords t : this.moves) {
+            if (c.getX() == t.getX() && c.getY() == t.getY()) {
+                return false;
+            }
         }
+        moves.add(c);
+        return true;
+
     }
 
-    public boolean checkCoords(int x, int y, String owner){
-        for (Coords c : this.grid){
-            if (c.getX() == x && c.getY() == y && c.getOwner() == owner){
+    public boolean checkCoords(int x, int y, String owner) {
+        for (Coords c : this.moves) {
+            if (c.getX() == x && c.getY() == y && c.getOwner() == owner) {
                 return true;
             }
         }
         return false;
     }
 
-    public String boardState(){
-        String boardString = "";
-        for (Coords c : this.grid){
-            for (int i = 0; i < 3; i++){
-                for (int j = 0; j < 3; j++){
-
-                   if (c.getX() == i && c.getY() == j){
-
-                       if (c.getOwner() == "p"){
-                           boardString += "X";
-                       }
-                       if (c.getOwner() == "c"){
-                           boardString += "O";
-                       }
-                   } else {
-                       boardString += "_";
-                   }
+    public String buildBoard() {
+        StringBuilder board = new StringBuilder();
+        //Move through 2D array
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                //Check every item in list "moves" for these coordinates
+                for (Coords c : this.moves) {
+                    if (c.getX() == i && c.getY() == j) {
+                        //If the player owns the coordinates
+                        if (c.getOwner().equals("p")) {
+                            grid[i][j] = "X";
+                        }
+                        //If the computer owns the coordinates
+                        if (c.getOwner().equals("c")) {
+                            grid[i][j] = "O";
+                        }
+                    }
                 }
-                boardString += "\n";
+                if (grid[i][j] == null) {
+                    grid[i][j] = "_";
+                }
             }
         }
-        return boardString;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                board.append(grid[i][j]);
+            }
+            board.append("\n");
+        }
+        return board.toString();
     }
 
 }

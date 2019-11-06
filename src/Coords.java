@@ -11,7 +11,7 @@ public class Coords {
     }
 
     public String toString(){
-        return Integer.toString(this.x) + ", " + Integer.toString(this.y) + ", " + owner;
+        return this.x + ", " + this.y + ", " + owner;
     }
 
     public int getX() {

@@ -8,7 +8,7 @@ import java.util.List;
 public class Board {
 
     private String[][] grid = new String[3][3];
-    private List<Coords> moves = new ArrayList<>();
+    public List<Coords> moves = new ArrayList<>();
 
     public Board() {
         //Invalid coordinate in order to allow list to be rendered
@@ -17,7 +17,11 @@ public class Board {
 
     public boolean addCoords(Coords c) {
         for (Coords t : this.moves) {
-            if (c.getX() == t.getX() && c.getY() == t.getY()) {
+            //Check if coordinate already exists
+            if (c.getX() == t.getX() && c.getY() == t.getY()
+                    //Check if coordinate is out of bounds
+                || c.getX() < 1 || c.getX() > 3
+                || c.getY() < 1 || c.getY() > 3) {
                 return false;
             }
         }
@@ -35,36 +39,40 @@ public class Board {
         return false;
     }
 
-    public String buildBoard() {
+    public String buildBoard(Player player1, Player player2) {
         StringBuilder board = new StringBuilder();
         //Move through 2D array
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 //Check every item in list "moves" for these coordinates
                 for (Coords c : this.moves) {
-                    if (c.getX() == i && c.getY() == j) {
+                    if (c.getX() == i+1 && c.getY() == j+1) {
                         //If the player owns the coordinates
-                        if (c.getOwner().equals("p")) {
+                        if (c.getOwner().equals(player1.getName())) {
                             grid[i][j] = "X";
                         }
                         //If the computer owns the coordinates
-                        if (c.getOwner().equals("c")) {
+                        if (c.getOwner().equals("c") || c.getOwner().equals(player2.getName())) {
                             grid[i][j] = "O";
                         }
                     }
                 }
+                //Render any null items in grid as "_"
                 if (grid[i][j] == null) {
                     grid[i][j] = "_";
                 }
             }
         }
 
+        //Add all rendered spaces to the grid array
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 board.append(grid[i][j]);
             }
             board.append("\n");
         }
+
+        //Return the rendered board
         return board.toString();
     }
 
